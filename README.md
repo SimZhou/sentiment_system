@@ -8,8 +8,19 @@
 
 目前模型部分使用的是fsauor2018的方案。
 
-#### 
+
+
+合作者：
+
+[@wll1014](https://github.com/wll1014)
+
+[@lullaby-li](https://github.com/lullaby-li)
+
+[@Andrewsunning](https://github.com/Andrewsunning)
+
+[@SimZhou](https://github.com/SimZhou)
 
 
 
 资料：[AI Challenger 2018情感分析赛道资料汇总](https://blog.csdn.net/lrt366/article/details/89244735)
+
