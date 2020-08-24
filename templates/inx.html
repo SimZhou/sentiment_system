@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>评论情感自动分析系统</title>
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="./static/echarts.min.js"></script>
+    <script src="./static/sd_1.js"></script>
+    <script src="./static/tree.js"></script>
+    <script src="./static/leida.js"></script>
+    <script src="./static/sd_2.js"></script>
+    <style>
+        .container{
+            margin-top: 3%;
+        }
+        .tab-container{
+            min-height: 300px;
+        }
+        /* .home-container{
+            margin-top: 5%;
+        } */
+        .title{
+            background-color: #E6E6FA;
+            height: 40px;
+        }
+        .text{
+            text-align: center;
+            width: 820px;
+            min-height: 120px;
+            margin-left: 160px;
+            display: inline-block;
+            /*margin: auto;*/
+            /*background-color: #E6E6FA;*/
+        }
+        .input__area{
+            font-family:verdana;
+            /*text-align: center;*/
+        }        
+        #abstract{
+            min-height: 300px;
+            background-color: #E6E6FA
+        }
+        .btn-abstract{
+            margin-top: 30px;
+            margin-left:46%;
+        }
+        .positive{
+            color: #FF164C;
+        }
+        .negative{
+            color: #1BAD19;        
+        }
+        .neutral{
+            color: #eac736;
+            /* color: dimgrey; */
+        }
+        .tree_leida_wrapper{
+            width: 1300px;
+            margin: 0px auto;
+        }
+        #main_sd_2{
+            width: 800px;
+            margin: 0px auto;
+        }
+        .extrat_content_title{
+            margin-top: 20px;
+            height: 30px;
+            text-align: center;
+        }
+        .content_detail{
+            height: 10px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        .extrat_content{
+            margin-left: 20px;
+            text-align: center;
+        }
+        .center-me {
+          width:0 auto;
+          margin: 0 auto;
+          text-align: center;
+        }
+        .center-me div{
+          display:inline-block;
+          /*background-color:#000;*/
+          /*color:#fff;*/
+        }
+        .btn {
+            float: left;
+            min-width: 54px;
+            max-width: 250px;
+            display: inline-block;
+            /*margin: 0.3em;*/
+            margin:auto;
+            padding: 0.4em 1em;
+            /*border: none;*/
+            background: none;
+            color: inherit;
+            vertical-align: middle;
+            /*position: relative;*/
+            /*z-index: 1;*/
+            -webkit-backface-visibility: hidden;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    </style>
+</head>
+
+<body>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#home">主页</a></li>
+        <li><a href="#principle">原理</a></li>
+        <li><a href="#code">源码</a></li>
+        <li><a href="#versions">版本</a></li>
+        <li><a href="#contribution">贡献者</a></li>
+    </ul>
+    <h1 align="center" style="font-family:verdana">餐馆评论自动情感分析系统</h1>
+    <h4 align="center" style="font-family:verdana">（Powered by Tensorflow, Flask）</h4>
+    <div class="container">
+        <div class="home-container tab-container">
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" id="acticle">
+                    <div class="text" , id="textbox_content">
+                        <textarea id="inputContent" dir="auto" class="input__area" placeholder="(输入评论内容后点击分析按钮，人工智(zhi)能(zhang)就会帮你分析哦！^_^)", style="background:transparent; overflow: auto; box-sizing: border-box; height: 200px; width: 820px; padding: 10px"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="aaaaaa">
+                    <div class="center-me" style="margin-top: 10px">
+                        <div style=""><button id="submitbt" type="button" class="btn btn-primary btn-abstract", style="">分析评论</button></div>
+                        <div style=""><button id="feelinglucky" type="button" class="btn btn-primary btn-abstract", style="">幸运一下！</button></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="analyse-result-container" style="display: none;">
+                    <div  class="analyse_result">
+                        <div class="extrat_content_title"><b>情感评价提取</b></div>
+                        <div class="extrat_content", style="margin-left:200px;margin-right:200px">
+                            <span id="positive_content" class="positive"></span><span class="positive", style="">&nbsp;</span>
+                            <span id="neutral_content" class="neutral"></span><span class="neutral">&nbsp;</span>
+                            <span id="negative_content" class="negative"></span><span class="negative"></span>
+                        </div>
+                        
+                    </div>
+                    <div class="main_picture_wrapper">
+                        <div class="content_detail"><b>内容详情</b></div>
+                        <div id="main_sd_1" style="width: 1000px; height:120px; margin-top: 30px; text-align: center; margin-left: 40px;"></div>
+                        <div class="content_detail2", style="text-align: center;margin-top: 0px;"><b>👇 👇 👇</b></div>
+                        <div class="tree_leida_wrapper" style="height: 600px;">
+                            <div id="main_tree" style="width: 550px;height:600px;margin-top: 0px;float: left;"></div>
+                            <div id="main_leida" style="width: 600px;height:300px;margin-top: 50px;float: left;"></div>
+                        </div>
+                        <div class="sd_wrapper">
+                            <div id="main_sd_2" style="height:1000px;margin-top: 30px;"></div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="principle-container tab-container" style="display: none">
+            <div class="row">
+                (待添加)
+            </div>
+        </div>
+        <div class="code-container tab-container" style="display: none">
+            <div class="row">
+                (待添加)
+            </div>
+        </div>
+        <div class="versions-container tab-container" style="display: none">
+            <div class="row">
+                <h2>更新历史</h2>(当前版本: 0.2.0)<br>
+                <!-- <h3>版本 0.3.0 - 2019.12.05</h3>
+                - 功能改进：现在会根据输入正文的长度，自适应计算摘要应有的长度。<br><br> -->
+                <!-- <h3>版本 0.2.1 - 2019.12.05</h3>
+                - 后端修复：在句子清洗时去掉了孤立省略号，这个问题会导致孤立的省略号占用两句句子的名额。<br><br> -->
+                <h3>版本 0.2.0 - 2020.01.17</h3>
+                - 改进了Echarts散点图的样式<br>
+                - 页面排版及内容优化
+                - 现在如果文本框中为空时点击分析按钮，不会往后端提交请求了<br><br>
+                <h3>版本 0.1.0 - 2020.01.16</h3>
+                - 项目初步上线<br><br>
+            </div>
+        </div>
+        <div class="contribution-container tab-container" style="display: none">
+            <div class="row">
+                <h3 align="left" style="font-family:verdana">前端：吴林莉</h3>
+            </div>
+            <div class="row">
+                <h3 align="left" style="font-family:verdana">数据库：李湘湘</h3>    
+            </div>
+            <div class="row">
+                <h3 align="left" style="font-family:verdana">算法：李岩、周易华</h3>    
+            </div>
+            <div class="row">
+                <h3 align="left" style="font-family:verdana">Leader，后端：周易华</h3>    
+            </div>
+            <div class="row">
+                <h4 align="left" style="font-family:verdana"><br>(Special thanks to Github@xueyouluo of his open-source code fsauor2018)</h3>
+            </div>            
+        </div>
+    </div>
+</body>
+<script>
+$(document).ready(function() {
+    //$(".tab-container").height(window.outerHeight-100)
+    $(".nav-tabs li").click(function() {
+        $(".nav-tabs li").removeClass("active")
+        $(this).addClass("active")
+        var href_val = $(this).find("a").attr("href").split("#")[1]
+        var container = href_val + "-container"
+        $(".tab-container").hide();
+        $("." + container).show();
+    })
+
+    $("#submitbt").click(function(){
+        var post_data = {
+            // "title": $("#inputTitle").val(), 
+            "content": $("#inputContent").val()
+        }
+        if (!post_data.content){document.getElementById("inputContent").placeholder = "不输入内容是无法分析的哦！0_0";}
+        else{
+            $.post("/testPost", { "title": $("#inputTitle").val(), "content": $("#inputContent").val() },
+                function(data, status) {
+
+                    if(post_data.content){
+                        var analyse_result_data = data.meta;
+                        var draw_result_data = data.result;
+
+                        $("#positive_content").html(analyse_result_data.positive.toLocaleString().replace(/,/g,"，"))
+                        $("#neutral_content").html(analyse_result_data.neutral.toLocaleString().replace(/,/g,"，"))
+                        $("#negative_content").html(analyse_result_data.negative.toLocaleString().replace(/,/g,"，"))
+                        $("#analyse-result-container").show()
+
+                        sd_1.draw("main_sd_1",draw_result_data)//绘制散点图
+                        tree.draw("main_tree",draw_result_data)//绘制树图
+                        leida.draw("main_leida",draw_result_data)//绘制雷达图
+                        sd_2.draw("main_sd_2",draw_result_data)
+                    }
+                    
+                    // alert("数据：" + data + "\n状态：" + status);
+                },"json").error(function(){
+    				    console.error("Empty Input Error")
+    			    });
+            };
+    });
+
+    $("#feelinglucky").click(function(){
+        // var nothing = None;
+        $.get("feelinglucky", function(data, status) {
+                //如果输入文本框里有东西，得先把它清空
+                if($("#inputContent").val()){
+                    document.getElementById("inputContent").value="";
+                }
+                // 把文本填进文本框
+                var text_result_data = data.text;
+                document.getElementById("inputContent").placeholder=text_result_data.toLocaleString();
+                // 然后显示文本提取内容
+                var analyse_result_data = data.meta;
+                var draw_result_data = data.result;
+
+                $("#positive_content").html(analyse_result_data.positive.toLocaleString().replace(/,/g,"，"))
+                $("#neutral_content").html(analyse_result_data.neutral.toLocaleString().replace(/,/g,"，"))
+                $("#negative_content").html(analyse_result_data.negative.toLocaleString().replace(/,/g,"，"))
+                $("#analyse-result-container").show()
+                // 然后绘制散点图树图等
+                sd_1.draw("main_sd_1",draw_result_data)//绘制散点图
+                tree.draw("main_tree",draw_result_data)//绘制树图
+                leida.draw("main_leida",draw_result_data)//绘制雷达图
+                sd_2.draw("main_sd_2",draw_result_data)
+            // textbox.innerHTML = "aaaaaaa";
+        }, "json").error(function(){
+            console.error("network error")
+        });
+    });
+
+
+})
+
+</script>
+
+</html>

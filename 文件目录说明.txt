@@ -1,0 +1,13 @@
+dataset文件夹：存放细粒度情感分类的训练及测试数据
+doc文件夹：项目有关文档
+models文件夹：使用的模型
+proj02demo文件夹：项目2的前端demo，使用的随机模拟数据
+static：前端js文件，echarts库
+templates：前端页面文件
+
+demo.py：demo文件，在部署时也必须，有用到里面的函数
+end_to_end.py：模型部署，推理主函数都在里面
+flaskapp.py：flask后端服务器
+
+README.md：介绍文档
+requirements.txt：使用pip install -r requirements.txt安装本项目所需库（可能不全）
